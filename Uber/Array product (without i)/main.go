@@ -1,127 +1,64 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"log"
-	"os"
-	"strconv"
+	"sort"
 )
 
 /*
-Good morning! Here's your coding interview problem for today.
+Given a list of numbers and a number k, return whether any two numbers
+from the list add up to k.
 
-This problem was asked by Uber.
+For example, given [10, 15, 3, 7] and k of 17, return true since 10 + 7 is 17.
 
-Given an array of integers, return a new array such that each element at index i
-of the new array is the product of all the numbers in the original array except the one at i.
-
-For example, if our input was [1, 2, 3, 4, 5], the expected output would be [120, 60, 40, 30, 24].
-If our input was [3, 2, 1], the expected output would be [2, 3, 6].
-
-Follow-up: what if you can't use division?
+Bonus: Can you do this in one pass?
 */
 
-// SPACE O(n²)
-// TIME  O(n)
-func function(slice []int) []int {
-	slice_1 := make([]int, 0)
-	product := 1
-	for i := 0; i < len(slice); i++ {
-		product = 1
-		for j := 0; j < len(slice); j++ {
-			if j == i {
-				continue
+// O = n²
+// Theta = n²
+func inside(slice []int, k int) (bool, int, int) {
+	sort.Ints(slice) // O(n*log(n))
+	have := false
+	low := 0
+	high := 0
+	needle := 0
+	i := 0
+	for i = 0; i < len(slice)-1; i++ {
+		low = i + 1
+		high = len(slice) - 1
+		needle = (high + low) / 2
+		for low <= high {
+			if slice[i]+slice[needle] == k {
+				return true, needle, i
+			} else if slice[i]+slice[needle] > k {
+				high = needle - 1
+				needle = (high + low) / 2
 			} else {
-				product *= slice[j]
+				low = needle + 1
+				needle = (high + low) / 2
 			}
 		}
-		slice_1 = append(slice_1, product)
 	}
-
-	return slice_1
-}
-
-// SPACE O(n)
-// TIME  O(n)
-func function2(slice []int) []int {
-
-	if len(slice) == 1 {
-		slice_1 := make([]int, 0)
-		slice_1 = append(slice_1, 0)
-		return slice_1
-	}
-
-	slice_1 := make([]int, len(slice))
-
-	i, temp := 0, 1
-	for ; i < len(slice); i++ {
-		slice_1[i] = temp
-		temp *= slice[i]
-	}
-
-	i, temp = len(slice)-1, 1
-	for ; i >= 0; i-- {
-		slice_1[i] *= temp
-		temp *= slice[i]
-	}
-
-	return slice_1
-}
-
-func IsDigitsOnly(s string) bool {
-	for _, c := range s {
-		if c < '0' || c > '9' {
-			return false
-		}
-	}
-	return true
+	return have, needle, i
 }
 
 func main() {
-	temp := make([]int, 0)
-	temp = append(temp, 1)
-	temp = append(temp, 2)
-	temp = append(temp, 3)
-	temp = append(temp, 4)
-	temp = append(temp, 5)
-	array1_temp := function2(temp)
-	fmt.Print(array1_temp)
+	array1 := []int{10, 15, 3, 7}
+	array2 := []int{5, 12, 3, 9, 6, 2, 7, 3}
+	array3 := []int{20, 12, 3, 78, 5}
+	k1 := 17
+	k2 := 13
+	k3 := 55
+	a1, needle1, i1 := inside(array1, k1)
+	a2, needle2, i2 := inside(array2, k2)
+	a3, needle3, i3 := inside(array3, k3)
 
-	fmt.Println("Given an array of integers, return a new array such that each element at index i")
-	fmt.Println("of the new array is the product of all the numbers in the original array except the one at i.")
-	fmt.Println("For example, if our input was [1, 2, 3, 4, 5], the expected output would be [120, 60, 40, 30, 24].")
-	fmt.Printf("If our input was [3, 2, 1], the expected output would be [2, 3, 6].\n\n")
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Print("Type the array values or 'exit' to finish\n-> ")
-	slice := make([]int, 0)
-	scanner.Scan()
-	value := scanner.Text()
-	err := scanner.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-	for value != "exit" {
-		if IsDigitsOnly(value) && value != "" {
-			temp, _ := strconv.Atoi(value)
-			slice = append(slice, temp)
-		} else {
-			fmt.Printf("Cannot convert value: %s\n", value)
-		}
-		fmt.Print("-> ")
-		scanner.Scan()
-		err := scanner.Err()
-		if err != nil {
-			log.Fatal(err)
-		}
-		value = scanner.Text()
-	}
+	fmt.Printf("Given a list of numbers and a number k, return whether any two numbers\n")
+	fmt.Printf("from the list add up to k.\n")
+	fmt.Printf("For example, given [10, 15, 3, 7] and k of 17, return true since 10 + 7 is 17.\n")
+	fmt.Printf("Bonus: Can you do this in one pass?\n\n")
 
-	array1_1 := function(slice)
-	array1_2 := function2(slice)
-
-	fmt.Println("\nmethod 1 = ", array1_1)
-	fmt.Println("method 2 = ", array1_2)
-	fmt.Println("\nPress ENTER to finish")
-	scanner.Scan()
+	fmt.Printf("%v\n%d + %d = %d\n%t\n\n", array1, array1[i1], array1[needle1], k1, a1)
+	fmt.Printf("%v\n%d + %d = %d\n%t\n\n", array2, array2[i2], array2[needle2], k2, a2)
+	fmt.Printf("%v\n%d + %d = %d\n%t\n\n", array3, array3[i3], array3[needle3], k3, a3)
 }
