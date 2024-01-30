@@ -1,5 +1,5 @@
 # Big_Tech_Admission_Interview_Questions
-My repository with solved data structure and algorithm questions made at big tech admission interviews
 
+Meu repositorio de questões sobre estruturas de dados e algoritmos pedidas em entrevistas de big techs
 
-Inside the folder of each big teach there are sub folders with questions, one sub folder for each question
+Cada desafio sera realizado em uma linguagem diferente para aprendizado completo e treinamento em varias linguagens
